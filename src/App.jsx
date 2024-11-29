@@ -1,16 +1,21 @@
-import { useState } from 'react'
-
-import './App.css'
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Dashboard from './Admin/Dashboard';
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    
-      <div className='bg-blue-400 text-xl'>
-        Jello 
-      </div>
-  )
+    <>
+      <BrowserRouter>
+        <Routes>
+          <Route>
+            <Route path="/admin" element={<Dashboard />} />
+
+          </Route>
+
+        </Routes>
+      </BrowserRouter>
+    </>
+  );
 }
 
-export default App
+export default App;
