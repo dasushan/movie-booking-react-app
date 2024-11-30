@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Dashboard from './Admin/Dashboard';
+import NewMovie from './Admin/NewMovie';
 import './App.css';
 
 function App() {
@@ -7,9 +8,9 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
-          <Route>
-            <Route path="/admin" element={<Dashboard />} />
-
+          <Route path="/admin" element={<Dashboard />}>
+            
+            <Route path="newmovie" element={<NewMovie />}/>
           </Route>
 
         </Routes>
