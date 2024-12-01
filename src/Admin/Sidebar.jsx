@@ -33,7 +33,7 @@ const Sidebar = () => {
         <div
           className="flex gap-3 items-center justify-center"
           onClick={() => {
-            navigate('');
+            navigate('addcategory');
           }}
         >
           <div>
