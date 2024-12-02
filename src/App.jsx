@@ -4,6 +4,7 @@ import NewMovie from './Admin/NewMovie';
 import './App.css';
 import Category from './Admin/Category';
 import Timing from './Admin/Timing';
+import LandingPage from './User/pages/LandingPage';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             <Route path="timing" element={<Timing />}/>
           </Route>
 
+          <Route path="/" element={<LandingPage />}/>
         </Routes>
       </BrowserRouter>
     </>
