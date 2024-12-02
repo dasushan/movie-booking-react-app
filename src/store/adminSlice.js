@@ -19,10 +19,13 @@ const adminSlice = createSlice({
         },
         setShowCategoryModal: (state, action) => {
             state.showCategoryModal = action.payload
+        },
+        setShowTimingModal: (state, action) => {
+            state.showTimingModal = action.payload
         }
     }
 })
 
-export const {setMovies, setSelectedMovie, setShowCategoryModal} = adminSlice.actions;
+export const {setMovies, setSelectedMovie, setShowCategoryModal, setShowTimingModal} = adminSlice.actions;
 
 export default adminSlice;

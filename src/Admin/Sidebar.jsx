@@ -60,7 +60,9 @@ const Sidebar = () => {
         </div>
       </div>
       <div className="p-3 m-3 bg-sky-200 rounded-md hover:rounded-l-full hover:bg-blue-200 hover:scale-105 transition-all ease-in-out hover:cursor-pointer">
-        <div className="flex gap-3 items-center justify-center">
+        <div className="flex gap-3 items-center justify-center" onClick={() => {
+          navigate('/admin/timing');
+        }}>
           <div>
             <MonitorPlay />
           </div>

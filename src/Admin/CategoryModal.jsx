@@ -47,6 +47,7 @@ const CategoryModal = () => {
               trailerLink: selectedMovie.trailerLink,
               id: selectedMovie.id,
               images: selectedMovie.images,
+              timing: selectedMovie.timing,
               category: categoryInputRef.current.value,
             }),
             headers: {
