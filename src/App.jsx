@@ -5,6 +5,7 @@ import './App.css';
 import Category from './Admin/Category';
 import Timing from './Admin/Timing';
 import LandingPage from './User/pages/LandingPage';
+import UserDeck from './User/UserDeck';
 
 function App() {
   return (
@@ -18,7 +19,9 @@ function App() {
             <Route path="timing" element={<Timing />}/>
           </Route>
 
-          <Route path="/" element={<LandingPage />}/>
+          <Route path="/" element={<LandingPage />}>
+          <Route path="/" element={<UserDeck />}/>
+          </Route>
         </Routes>
       </BrowserRouter>
     </>
