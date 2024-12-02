@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setMovies } from '../store/userSlice';
+import { setMovies , setSelectedMovie, setShowBookingModal} from '../store/userSlice';
 import { Info } from 'lucide-react';
 import CustomCarousel from './CustomCarousel';
+import BookingModal from './BookingModal';
+
 const UserDeck = () => {
   const movies = useSelector((state) => state.user.movies);
+  const showBookingModal = useSelector((state) => state.user.showBookingModal)
   const dispatch = useDispatch();
   const [heroMovies, setHeroMovies] = useState([]);
   const [nowPlayingMovies, setNowPlayingMovies] = useState([]);
@@ -50,10 +53,12 @@ const UserDeck = () => {
   console.log(movies);
 
   const clickHandler =(movie) => {
-
+    dispatch(setShowBookingModal(true));
+    dispatch(setSelectedMovie(movie))
   }
   return (
     <div className="h-full">
+        {showBookingModal && <BookingModal />}
       <section className="w-full ">
         {heroMovies.map((m, index) => {
           return (

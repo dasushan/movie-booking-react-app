@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     movies: [],
     selectedMovie: null,
+    showBookingModal: false
 }
 
 const userSlice = createSlice({
@@ -14,9 +15,12 @@ const userSlice = createSlice({
         },
         setSelectedMovie: (state, action) => {
             state.selectedMovie = action.payload
+        },
+        setShowBookingModal: (state,action) => {
+            state.showBookingModal = action.payload
         }
     }
 })
 
-export const {setMovies, setSelectedMovies} = userSlice.actions;
+export const {setMovies, setSelectedMovie, setShowBookingModal} = userSlice.actions;
 export default userSlice;

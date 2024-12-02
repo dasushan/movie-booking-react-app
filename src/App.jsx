@@ -6,6 +6,7 @@ import Category from './Admin/Category';
 import Timing from './Admin/Timing';
 import LandingPage from './User/pages/LandingPage';
 import UserDeck from './User/UserDeck';
+import BookedMovies from './Admin/BookedMovies';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             <Route path="newmovie" element={<NewMovie />}/>
             <Route path="addcategory" element={<Category />}/>
             <Route path="timing" element={<Timing />}/>
+            <Route path="booking" element={<BookedMovies />}/>
           </Route>
 
           <Route path="/" element={<LandingPage />}>
