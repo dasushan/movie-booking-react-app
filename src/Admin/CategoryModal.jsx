@@ -2,6 +2,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useRef } from 'react';
 import { Equal, X } from 'lucide-react';
 import { setShowCategoryModal } from '../store/adminSlice';
+import { success, error } from '../utils/toasts';
 const CategoryModal = () => {
   const selectedMovie = useSelector((state) => state.admin.selectedMovie);
   const movies = useSelector((state) => state.admin.movies);
@@ -10,63 +11,125 @@ const CategoryModal = () => {
 
   console.log(selectedMovie);
   console.log(movies);
-  const submitHandler = (event) => {
+  
+  const submitHandler = async (event) => {
     event.preventDefault();
-    fetch(
-      `https://movie-website-13491-default-rtdb.asia-southeast1.firebasedatabase.app/movies.json`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    ).then(async (res) => {
-      try {
-        const data = await res.json();
-        let keY = null;
-        console.log(selectedMovie.id)
-        for (const [key, value] of Object.entries(data)) { 
-          if (value.id === selectedMovie.id) {
-            keY = key;
-          }
+    try {
+      let response = await fetch(
+        `https://movie-website-13491-default-rtdb.asia-southeast1.firebasedatabase.app/movies.json`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
         }
-        fetch(
-          `https://movie-website-13491-default-rtdb.asia-southeast1.firebasedatabase.app/movies/${keY}.json`,
-          {
-            method: 'PUT',
-            body: JSON.stringify({
-              name: selectedMovie.name,
-              description: selectedMovie.description,
-              director: selectedMovie.director,
-              releasedDate: selectedMovie.releasedDate,
-              lang: selectedMovie.lang,
-              genre: selectedMovie.genre,
-              rating: selectedMovie.rating,
-              hours: selectedMovie.hours,
-              minutes: selectedMovie.minutes,
-              trailerLink: selectedMovie.trailerLink,
-              id: selectedMovie.id,
-              images: selectedMovie.images,
-              timing: selectedMovie.timing,
-              category: categoryInputRef.current.value,
-            }),
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }
-        ).then(async (res) => {
-          try {
-            const data = await res.json();
-            console.log(data);
-            dispatch(setShowCategoryModal(false));
-          } catch (err) {
-            console.log(`Error updating category`, err);
-          }
-        });
-      } catch (err) {
-        console.log(err.message);
+      );
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
       }
-    });
+      let data = await response.json();
+
+      let keY = null;
+
+      for (const [key, value] of Object.entries(data)) {
+        if (value.id === selectedMovie.id) {
+          keY = key;
+        }
+      }
+      response = await fetch(
+        `https://movie-website-13491-default-rtdb.asia-southeast1.firebasedatabase.app/movies/${keY}.json`,
+        {
+          method: 'PUT',
+          body: JSON.stringify({
+            name: selectedMovie.name,
+            description: selectedMovie.description,
+            director: selectedMovie.director,
+            releasedDate: selectedMovie.releasedDate,
+            lang: selectedMovie.lang,
+            genre: selectedMovie.genre,
+            rating: selectedMovie.rating,
+            hours: selectedMovie.hours,
+            minutes: selectedMovie.minutes,
+            trailerLink: selectedMovie.trailerLink,
+            id: selectedMovie.id,
+            images: selectedMovie.images,
+            timing: selectedMovie.timing,
+            category: categoryInputRef.current.value,
+          }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      }
+      data = await response.json();
+      success({
+        position: 'top-right',
+        message: `Movie category updated`,
+      });
+      dispatch(setShowCategoryModal(false));
+    } catch (err) {
+      console.log(err.message);
+      error({ position: 'top-center', message: err.message });
+    }
+
+    // fetch(
+    //   `https://movie-website-13491-default-rtdb.asia-southeast1.firebasedatabase.app/movies.json`,
+    //   {
+    //     method: 'GET',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //   }
+    // ).then(async (res) => {
+    //   try {
+    //     const data = await res.json();
+    //     let keY = null;
+    //     console.log(selectedMovie.id);
+    //     for (const [key, value] of Object.entries(data)) {
+    //       if (value.id === selectedMovie.id) {
+    //         keY = key;
+    //       }
+    //     }
+    //     fetch(
+    //       `https://movie-website-13491-default-rtdb.asia-southeast1.firebasedatabase.app/movies/${keY}.json`,
+    //       {
+    //         method: 'PUT',
+    //         body: JSON.stringify({
+    //           name: selectedMovie.name,
+    //           description: selectedMovie.description,
+    //           director: selectedMovie.director,
+    //           releasedDate: selectedMovie.releasedDate,
+    //           lang: selectedMovie.lang,
+    //           genre: selectedMovie.genre,
+    //           rating: selectedMovie.rating,
+    //           hours: selectedMovie.hours,
+    //           minutes: selectedMovie.minutes,
+    //           trailerLink: selectedMovie.trailerLink,
+    //           id: selectedMovie.id,
+    //           images: selectedMovie.images,
+    //           timing: selectedMovie.timing,
+    //           category: categoryInputRef.current.value,
+    //         }),
+    //         headers: {
+    //           'Content-Type': 'application/json',
+    //         },
+    //       }
+    //     ).then(async (res) => {
+    //       try {
+    //         const data = await res.json();
+    //         console.log(data);
+    //         dispatch(setShowCategoryModal(false));
+    //       } catch (err) {
+    //         console.log(`Error updating category`, err);
+    //       }
+    //     });
+    //   } catch (err) {
+    //     console.log(err.message);
+    //   }
+    // });
   };
   return (
     <div className="h-screen w-full fixed left-0 top-0 flex justify-center items-center z-20 bg-opacity-55">
