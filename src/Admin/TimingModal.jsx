@@ -2,6 +2,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useRef } from 'react';
 import { Equal, X } from 'lucide-react';
 import { setShowTimingModal } from '../store/adminSlice';
+import { success, error } from '../utils/toasts';
+
 const TimingModal = () => {
   const selectedMovie = useSelector((state) => state.admin.selectedMovie);
   const movies = useSelector((state) => state.admin.movies);
@@ -11,16 +13,20 @@ const TimingModal = () => {
   const firstDayEveningInputRef = useRef(selectedMovie.timing?.firstDayEvening);
   const firstDayNightInputRef = useRef(selectedMovie.timing?.firstDayNight);
   const secondDayInputRef = useRef(selectedMovie.timing?.secondDay);
-  const secondDayMorningInputRef = useRef(selectedMovie.timing?.secondDayMorning);
-  const secondDayEveningInputRef = useRef(selectedMovie.timing?.secondDayEvening);
+  const secondDayMorningInputRef = useRef(
+    selectedMovie.timing?.secondDayMorning
+  );
+  const secondDayEveningInputRef = useRef(
+    selectedMovie.timing?.secondDayEvening
+  );
   const secondDayNightInputRef = useRef(selectedMovie.timing?.secondDayNight);
   const thirdDayInputRef = useRef(selectedMovie.timing?.thirdDay);
   const thirdDayMorningInputRef = useRef(selectedMovie.timing?.thirdDayMorning);
   const thirdDayEveningInputRef = useRef(selectedMovie.timing?.thirdDayEvening);
   const thirdDayNightInputRef = useRef(selectedMovie.timing?.thirdDayNight);
 
-  console.log(selectedMovie.timing?.firstDay)
-  const submitHandler = (event) => {
+  console.log(selectedMovie.timing?.firstDay);
+  const submitHandler = async (event) => {
     event.preventDefault();
     const firstDay = firstDayInputRef.current.value;
     const firstDayMorning = firstDayMorningInputRef.current.value;
@@ -48,56 +54,134 @@ const TimingModal = () => {
       thirdDayMorning,
       thirdDayEvening,
       thirdDayNight,
-    }
+    };
     console.log(timing);
-    fetch(`https://movie-website-13491-default-rtdb.asia-southeast1.firebasedatabase.app/movies.json`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    }).then(async (res) => {
-      try{
-        const data = await res.json();
-        let keY =null;
-        for(const [key, value] of Object.entries(data)){
-          if(value.id === selectedMovie.id){
-            keY = key;
-          }
+    try {
+      let response = await fetch(
+        `https://movie-website-13491-default-rtdb.asia-southeast1.firebasedatabase.app/movies.json`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
         }
-        fetch(`https://movie-website-13491-default-rtdb.asia-southeast1.firebasedatabase.app/movies/${keY}.json`, {
+      );
+
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      }
+
+      let data = await response.json();
+
+      let keY = null;
+
+      for (const [key, value] of Object.entries(data)) {
+        if (value.id === selectedMovie.id) {
+          keY = key;
+        }
+      }
+
+      response = await fetch(
+        `https://movie-website-13491-default-rtdb.asia-southeast1.firebasedatabase.app/movies/${keY}.json`,
+        {
           method: 'PUT',
           body: JSON.stringify({
             name: selectedMovie.name,
-              description: selectedMovie.description,
-              director: selectedMovie.director,
-              releasedDate: selectedMovie.releasedDate,
-              lang: selectedMovie.lang,
-              genre: selectedMovie.genre,
-              rating: selectedMovie.rating,
-              hours: selectedMovie.hours,
-              minutes: selectedMovie.minutes,
-              trailerLink: selectedMovie.trailerLink,
-              id: selectedMovie.id,
-              images: selectedMovie.images,
-              category: selectedMovie.category,
-              timing: timing
+            description: selectedMovie.description,
+            director: selectedMovie.director,
+            releasedDate: selectedMovie.releasedDate,
+            lang: selectedMovie.lang,
+            genre: selectedMovie.genre,
+            rating: selectedMovie.rating,
+            hours: selectedMovie.hours,
+            minutes: selectedMovie.minutes,
+            trailerLink: selectedMovie.trailerLink,
+            id: selectedMovie.id,
+            images: selectedMovie.images,
+            category: selectedMovie.category,
+            timing: timing,
           }),
           headers: {
             'Content-Type': 'application/json',
-          }
-        }).then(async (res) => {
-          try{
-            const data = await res.json();
-            console.log(data);
-            dispatch(setShowTimingModal(false));
-          }catch(err){
-            console.log(err.message)
-          }
-        })
-      }catch(err){
-        console.log(err.message)
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
       }
-    })
+
+      data = await response.json();
+      console.log(data);
+      success({
+        position: 'top-right',
+        message: `Movie timing's updated`,
+      });
+      dispatch(setShowTimingModal(false));
+    } catch (err) {
+      console.log(err.message);
+      error({ position: 'top-center', message: err.message });
+    }
+    // fetch(
+    //   `https://movie-website-13491-default-rtdb.asia-southeast1.firebasedatabase.app/movies.json`,
+    //   {
+    //     method: 'GET',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //   }
+    // ).then(async (res) => {
+    //   try {
+    //     const data = await res.json();
+    //     let keY = null;
+    //     for (const [key, value] of Object.entries(data)) {
+    //       if (value.id === selectedMovie.id) {
+    //         keY = key;
+    //       }
+    //     }
+    //     fetch(
+    //       `https://movie-website-13491-default-rtdb.asia-southeast1.firebasedatabase.app/movies/${keY}.json`,
+    //       {
+    //         method: 'PUT',
+    //         body: JSON.stringify({
+    //           name: selectedMovie.name,
+    //           description: selectedMovie.description,
+    //           director: selectedMovie.director,
+    //           releasedDate: selectedMovie.releasedDate,
+    //           lang: selectedMovie.lang,
+    //           genre: selectedMovie.genre,
+    //           rating: selectedMovie.rating,
+    //           hours: selectedMovie.hours,
+    //           minutes: selectedMovie.minutes,
+    //           trailerLink: selectedMovie.trailerLink,
+    //           id: selectedMovie.id,
+    //           images: selectedMovie.images,
+    //           category: selectedMovie.category,
+    //           timing: timing,
+    //         }),
+    //         headers: {
+    //           'Content-Type': 'application/json',
+    //         },
+    //       }
+    //     ).then(async (res) => {
+    //       try {
+    //         const data = await res.json();
+    //         console.log(data);
+    //         success({
+    //           position: 'top-right',
+    //           message: `Movie timing's updated`,
+    //         });
+    //         dispatch(setShowTimingModal(false));
+    //       } catch (err) {
+    //         console.log(err.message);
+    //         error({ position: 'top-center', message: 'Error' });
+    //       }
+    //     });
+    //   } catch (err) {
+    //     console.log(err.message);
+    //     error({ position: 'top-center', message: err.message });
+    //   }
+    // });
   };
   return (
     <div className="h-screen w-full fixed left-0 top-0 flex justify-center items-center z-20 bg-opacity-55">
@@ -112,7 +196,10 @@ const TimingModal = () => {
             </span>
           </button>
         </header>
-        <div className='block p-3 m-3'> Release Date {selectedMovie.releasedDate}</div>
+        <div className="block p-3 m-3">
+          {' '}
+          Release Date {selectedMovie.releasedDate}
+        </div>
         <div className="p-3 m-3 flex flex-col w-max-[90%] ">
           <div className="mb-3 flex gap-2">
             <div>
@@ -272,6 +359,7 @@ const TimingModal = () => {
           </button>
         </div>
       </form>
+      
     </div>
   );
 };
