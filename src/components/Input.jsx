@@ -1,4 +1,5 @@
 import React, { useId } from 'react';
+import { twMerge } from 'tailwind-merge';
 
 const Input = React.forwardRef(function Input(
   { label, type = 'text', className = '', ...props }, ref
@@ -14,7 +15,7 @@ const Input = React.forwardRef(function Input(
       )}
       <input
         type={type}
-        className={`bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 outline-none ${className}`}
+        className={twMerge('bg-gray-50 border-2 border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 outline-none', className)}
         ref={ref}
         {...props}
         id={id}
